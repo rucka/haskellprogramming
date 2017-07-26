@@ -1,0 +1,6 @@
+== 1 All you need is lambda
+=== 1.6 Multiple arguments
+==== Intermission: Equivalence Exercises
+. 1) `λxy.xz` equals `λmn.mz`
+. 2) `λxy.xxy` equals `λa(λb.aab)`
+. 3) `λxyz.zx` equals `λtos.st`
