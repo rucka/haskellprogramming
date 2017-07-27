@@ -4,3 +4,26 @@
 . 1) `λxy.xz` equals `λmn.mz`
 . 2) `λxy.xxy` equals `λa(λb.aab)`
 . 3) `λxyz.zx` equals `λtos.st`
+
+=== 1.11 Exercises
+==== Combinators
+. `λx.xxx`       - y
+. `λxy.zx`       - n
+. `λxyz.xy(zx)`  - y
+. `λxyz.xy(zxy)` - y
+. `λxy.xy(zxy)`  - n
+
+==== Normal form or diverge
+Diverge - reduction does not end
+. `λx.xxx`          - converge
+. `(λz.zzz)(λy.yy)` - diverge
+. `(λx.xxx)z`       - converge
+
+==== Beta reduce
+. `(λabc.cba)zz(λwv.w) -> (λa.λb.λc.cba)zz(λwv.w) -> (λc.czz)(λw.λv.w) -> (λw.λv.w)zz -> z`
+. `(λx.λy.xyy)(λa.a)b -> (λy.(λa.a)yy)b -> (λy.yy)b -> bb`
+. `(λy.y)(λx.xx)(λz.zq) -> (λx.xx)(λz.zq) -> (λz.zq)(λz.zq) -> (λz.zq)q -> qq`
+. `(λz.z)(λz.zz)(λz.zy) -> (λz.zz)(λz.zy) -> (λz.zy)(λz.zy) -> (λz.zy)y -> yy`
+. `(λx.λy.xyy)(λy.y)y -> (λy.(λy.y)yy)y -> (λy.y)yy -> yy`
+. `(λa.aa)(λb.ba)c -> (λb.ba)(λb.ba)c -> ((λb.ba)a)c -> aac`
+. `(λxyz.xz(yz))(λx.z)(λx.a) -> (λx.λy.λz.xz(yz))(λx.z)(λx.a) -> (λy.λz1.(λx.z)z1(yz1))(λx.a) -> (λz1.(λx.z)z1((λx.a)z1)) -> (λz1.z((λx.a)z1)) -> λz1.za`
