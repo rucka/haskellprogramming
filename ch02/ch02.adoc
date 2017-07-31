@@ -5,13 +5,78 @@ Given the following lines of code they might appear in a source file, how would 
 . 1) `half x = x / 2` -> `let half x = x / 2`
 . 2) `square x = x * x` `let square x = x * x`
 
----
-
 Write one function that can accept one argument and work for all the following expressions. Be sure to name the functions
 . - `3.14 * (5 * 5)`
 . - `3.14 * (10 * 10)`
 . - `3.14 * (2 * 2)`
 . - `3.14 * (4 * 4)`
 
-`dpi x = 3.14 * x * x`
-`dpi x = pi * x * x`
+[source]
+----
+dpi x = 3.14 * x * x
+dpi x = pi * x * x
+----
+
+==== Exercises: Parentheses and Association
+. 1 different
++ 
+[source]
+----
+8 + 7 * 9
+(8 + 7) * 9
+----
+
+. 2 same
++
+[source]
+----
+perimeter x y = (x * 2) + (y * 2)
+perimeter x y = x * 2 + y * 2
+----
+
+. 3 different
++
+[source]
+----
+f x = x / 2 + 9
+f x = x / (2 + 9)
+----
+
+=== 2.7 Declaring values
+==== Heal the Sick
+. 1
+[source] wrong
+----
+let area x = 3. 14 * ( x * x)
+----
+
+[source] correct
+----
+let area x = 3.14 * ( x * x)
+----
+
+. 2
+[source] wrong
+----
+let double x = b * 2
+----
+
+[source] correct
+----
+let double x = x * 2
+----
+
+. 3
+[source] wrong
+----
+x = 7 
+ y = 10
+f= x + y
+----
+
+[source] correct
+----
+x = 7 
+y = 10
+f= x + y
+----
