@@ -171,3 +171,65 @@ let x = 3; y = 1000 in x + 3
 2 * 5 + 18
 2 * (5 + 18)
 ----
+
+==== More fun with functions
+
+[source]
+----
+let z = 7
+let y = z + 8
+let x = y ^ 2
+let waxOn = x * 5  -- 1125
+----
+
+. 1
+[source]
+----
+10 + waxOn -- 1135
+(+10) waxOn -- 1135 
+(-) 15 waxOn -- -1110
+(-) waxOn 15 -- 1110
+----
+
+. 2
+[source]
+----
+let triple x = x * 3
+----
+
+. 3
+[source]
+----
+triple waxOn -- 3375
+----
+
+. 4 -- practices.hs
+[source]
+----
+waxOn = x * 5
+  where x = y ^ 2
+        y = z + 8
+        z = 7
+----
+
+. 5
+[source]
+----
+triple x = x * 3
+----
+
+. 6
+[source]
+----
+waxOff x = triple x
+----
+
+. 7
+[source]
+----
+waxOff waxOn -- 3375
+waxOff 10    -- 30
+waxOff (-50) -- -150
+waxOff2 x = triple x ^ 2
+waxOff3 x = triple x / 10
+----
