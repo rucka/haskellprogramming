@@ -80,3 +80,94 @@ x = 7
 y = 10
 f= x + y
 ----
+
+=== 2.10 Let and where
+==== Exercises: A Head Code
+. 1 -> 5?
+[source]
+----
+let x = 5 in x
+----
+
+. 2 -> 25?
+[source]
+----
+let x = 5 in x * x
+----
+
+. 3 -> 30?
+[source]
+----
+let x = 5; y = 6 in x * y
+----
+
+. 4 -> 3?
+[source]
+----
+let x = 3; y = 1000 in x + 3
+----
+
+=== 2.11 Chapter Exercises
+==== Parenthesization
+. 1
+[source]
+----
+2 + 2 * 3 - 1 == 2 + (2 * 3) - 1
+----
+
+. 2
+[source]
+----
+(^) 10 $ 1 + 1
+(^) 10 (1 + 1)
+----
+
+. 3
+[source]
+----
+(^) 10 $ 1 + 1
+(^) 10 (1 + 1)
+----
+
+. 4
+[source]
+----
+2 ^ 2 * 4 ^ 5 + 1 == (2 ^ 2) * (4 ^ 5) + 1
+----
+
+==== Equivalent expressions
+
+. 1 -> equivalent
+[source]
+----
+1 + 1
+2
+----
+
+. 2 -> equivalent (same of 10 + (9 * 10))
+[source]
+----
+10 ^ 2
+10 + 9 * 10
+----
+
+. 3 -> not equivalent (not commutative)
+[source]
+----
+400 - 37
+(-) 37 400
+----
+
+. 4 -> not equivalent (div returns an Integer, check :info `div` and :info / in the repl)
+[source]
+----
+100 `div` 3
+100 / 3
+----
+
+. 5 -> not equivalent (the first expression is equal to (2 * 5) + 18)
+[source]
+----
+2 * 5 + 18
+2 * (5 + 18)
+----
