@@ -1,0 +1,1 @@
+rvrs x = drop 9 (take 16 x) ++ drop 5 (take 9 x) ++ take 5 x

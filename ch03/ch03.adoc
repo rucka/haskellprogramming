@@ -84,15 +84,32 @@ concat [tail [1, 2, 3], tail [4, 5, 6], tail [7, 8, 9]] --> match `[2,3,5,6,8,9]
 -----
 
 ==== Exercises: Building functions
-. String/list manipulation functions (includes 1 and 2)
+. 2 String/list manipulation functions (includes 1 and 2)
 [source]
 ----
 include::ch03.8B_2.hs[]
 ----
 
-. `*thirdLetter*`
+. 3`*thirdLetter*`
 [source]
 ----
 include::ch03.8B_3.hs[]
 ----
 
+. 4`*letterIndex*`
+[source]
+----
+include::ch03.8B_4.hs[]
+----
+
+. 5 Reverse function using `drop` and `take` (for fixed input)
+[source]
+----
+include::ch03.8B_5.hs[]
+----
+
+. 6 Extension of previous
+[source]
+----
+include::ch03.8B_6.hs[]
+----
