@@ -1,0 +1,86 @@
+== 5 Types
+=== 5.3 How to read type signatures
+==== Exercises: Type Matching
+[source]
+----
+not :: Bool -> Bool
+length :: [a] -> Int
+concat :: [[a]] -> [a]
+head :: [a] -> a
+(<) :: Ord a => a -> a -> Bool 
+----
+
+=== 5.5 Currying
+==== Exercises: Type Arguments
+Given a function and its type, tell us what type results from applying some or all of the arguments.
+
+. 1 
+[source]
+----
+let f :: a -> a -> a -> a; f = undefined
+let x :: Char; x = undefined
+:t f x
+-- Char -> Char -> Char
+----
+
+. 2
+[source]
+----
+let g :: a -> b -> c -> b; g = undefined
+:t g 0 'c' "woot"
+-- Char
+----
+
+. 3
+[source]
+----
+let h :: (Num a, Num b) => a -> b -> b; h = undefined
+:t h 1.0 2
+-- Num b => b
+----
+
+. 4
+[source]
+----
+let h :: (Num a, Num b) => a -> b -> b; h = undefined
+:t h 1 (5.5 :: Double)
+-- Double
+----
+
+. 5
+[source]
+----
+let jackal :: (Ord a, Eq b) => a -> b -> a; jackal = undefined
+:t jackal "keyboard" "has the word jackal in it"
+-- [Char]
+----
+
+. 6
+[source]
+----
+let jackal :: (Ord a, Eq b) => a -> b -> a; jackal = undefined
+:t jackal "keyboard"
+-- Ord a => Eq b => b -> [Char]
+----
+
+. 7
+[source]
+----
+let kessel :: (Ord a, Num b) => a -> b -> a; kessel = undefined
+:t kessel 1 2
+-- (Ord a, Num a) => a
+----
+. 8
+[source]
+----
+let kessel :: (Ord a, Num b) => a -> b -> a; kessel = undefined
+:t kessel 1 (2 :: Integer)
+-- (Ord a, Num a) => a
+----
+. 9
+[source]
+----
+let kessel :: (Ord a, Num b) => a -> b -> a; kessel = undefined
+:t kessel (1 :: Integer) 2
+-- Integer
+----
