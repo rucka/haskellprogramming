@@ -84,3 +84,198 @@ let kessel :: (Ord a, Num b) => a -> b -> a; kessel = undefined
 :t kessel (1 :: Integer) 2
 -- Integer
 ----
+
+=== 5.6 Parametricity
+==== Exercises: Parametricity
+All you can do with a parametrically polymorphic value is pass or not pass it to some other expression. 
+Prove that to yourself with these small demonstrations.
+
+. 1 Given the type `a -> a`, which is the type for `id`, attempt to make a function that terminates successfully that does something other than returning the same value. This is impossible, but you should try it anyway.
+[source]
+----
+let f :: a -> a; f a = a
+----
+
+. 2 We can get a more comfortable appreciation of parametricity by looking at `a -> a -> a`. This hypothetical function `a -> a -> a` has two–and only two–implementations. Write both possible versions of `a -> a -> a`. After doing so, try to violate the constraints of parametrically polymorphic values we outlined above.
+[source]
+----
+let f1 :: a -> a -> a; f1 a b = a
+let f2 :: a -> a -> a; f2 a b = b
+----
+. 3 Implement `a -> b -> b`. How many implementations can it have? Does the behavior change when the types of 'a' and 'b' change?
+[source]
+----
+let f :: a -> b -> b; f a b = b
+----
+
+=== 5.7 Type inference
+==== Exercises: Apply Yourself
+. 1
+[source]
+----
+ -- Type signature of general function 
+ (++) :: [a] -> [a] -> [a]
+-- How might that change when we apply 
+-- it to the following value?
+let myConcat x = x ++ " yo"
+--:t myConcat 
+--myConcat :: [Char] -> [Char]
+----
+
+. 2
+[source]
+----
+-- General function
+(*) :: Num a => a -> a -> a
+-- Applied to a value
+myMult x = (x / 3) * 5
+--:t myMult 
+--myMult :: Fractional a => a -> a
+----
+
+. 3
+[source]
+----
+take :: Int -> [a] -> [a]
+myTake x = take x "hey you"
+--:t myTake
+--myTake :: Int -> [Char]
+----
+
+. 4
+[source]
+----
+(>) :: Ord a => a -> a -> Bool
+myCom x = x > (length [1..10])
+--:t myCom
+--myCom :: Int -> Bool
+----
+
+. 5
+[source]
+----
+<) :: Ord a => a -> a -> Bool
+myAlph x = x < 'z'
+--:t myAlph
+----myAlph :: Char -> Bool
+----
+
+=== 5.8 Chapter Exercises
+==== Multiple choice
+. 1 A value of type `[a]` is -> (c) a list whose elements are all of some type `a`
+. 2 A function of type `[[a]] -> [a]` could -> (a) take a list of strings as an argument
+. 3 A function of type `[a] -> Int -> a` ->(a) takes one argument
+. 4 A function of type `(a, b) -> a` -> (c) takes a tuple argument and returns the first value
+
+==== Determine the type
+. 1  All function applications return a value. Determine the value returned by these function applications and the type of that value.
+.. `(* 9) 6` --> `54 :: Num a => a`
+.. `head [(0,"doge"),(1,"kitteh")]` --> `(0,"doge") :: Num t => (t, [Char])`
+.. `head [(0 :: Integer ,"doge"),(1,"kitteh")]` --> `(0,"doge") :: (Integer, [Char])`
+.. `if False then True else False` --> `False :: Bool`
+.. `length [1, 2, 3, 4, 5]` --> `5 :: Int`
+.. `(length [1, 2, 3, 4]) > (length "TACOCAT")` --> `False :: Bool`
+
+. 2 Given. What is the type of w?
+[source]
+----
+let x = 5
+let y = x + 5 
+let w = y * 10
+:t w -- Num a => a
+----
+
+. 3 Given. What is the type of z?
+[source]
+----
+let x = 5
+let y = x + 5
+let z y = y * 10
+:t z -- Num a => a -> a
+----
+
+. 4 Given. What is the type of f?
+[source]
+----
+let x = 5 
+let y = x + 5 
+let f = 4 / y
+:t f -- Fractional a => a
+----
+
+. 5 Given. What is the type of f?
+[source]
+----
+let x = "Julie"
+let y = " <3 "
+let z = "Haskell"
+let f = x ++ y ++ z
+:t f -- [Char]
+----
+
+==== Does it compile?
+For each set of expressions, figure out which expression, if any, causes the compiler to squawk at you (n.b. we do not mean literal squawking) and why.
+Fix it if you can.
+
+. 1 
+[source]
+----
+let bigNum = (^) 5 $ 10 
+let wahoo = bigNum $ 10 -- bigNum is a value not a function
+----
+
+. 2
+[source]
+----
+let x = print
+let y = print "woohoo!" 
+let z = x "hello world"
+-- ok
+----
+
+. 3
+[source]
+----
+let a = (+) 
+let b = 5
+let c = b 10 -- b is a value not a function
+let d = c 200 -- c is a value not a function
+----
+
+. 4
+[source]
+----
+let a = 12 + b
+let b = 10000 * c -- variable c not in scope
+----
+
+==== Type variable or specific type constructor?
+. 1 You will be shown a type declaration, and you should categorize each type. The choices are a fully polymorphic type variable, constrained polymorphic type variable, or concrete type con- structor.
+`f :: Num a => a -> b -> Int -> Int`
+--            [0]  [1]   [2]    [3]
+.. [0] constrained polymorphic (Num)
+.. [1] fully polymorphic
+.. [2] concrete
+.. [3] concrete
+
+. 2 Categorize each component of the type signature
+`f :: zed -> Zed -> Blah`
+--    [0]    [1]    [2]
+.. [0] fully polymorphic
+.. [1] concrete
+.. [2] concrete
+
+. 3 Categorize each component of the type signature
+`f :: Enum b => a -> b -> C`
+--             [0]  [1]  [2]
+.. [0] fully polymorphic
+.. [1] constrained polymorphic (Enum)
+.. [2] concrete
+
+. 4 Categorize each component of the type signature
+`f :: f -> g -> C`
+--   [0]  [1]  [2]
+.. [0] fully polymorphic
+.. [1] fully polymorphic
+.. [2] concrete
+
