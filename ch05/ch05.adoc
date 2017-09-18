@@ -279,3 +279,196 @@ let b = 10000 * c -- variable c not in scope
 .. [1] fully polymorphic
 .. [2] concrete
 
+==== Write a type signature
+For the following expressions, please add a type signature.
+You should be able to rely on GHCi type inference to check your work, although you might not have precisely the same answer as GHCi gives (due to polymorphism, etc).
+
+. 1 
+While we haven’t fully explained this syntax yet, you’ve seen it in Chapter 2 and as a solution to an exercise in Chapter 4. 
+This syntax is a way of destructuring a single element of a list by pattern matching.
+[source]
+----
+functionH :: [a] -> a; functionH (x:_) = x
+----
+. 2 
+[source]
+----
+functionC :: Ord a => a -> a -> Bool; functionC x y = if (x > y) then True else False
+----
+. 3 
+[source]
+----
+functionS :: (a, b) -> b; functionS (x, y) = y
+----
+
+==== Given a type, write the function
+You will be shown a type and a function that needs to be written. 
+Use the information the type provides to determine what the function should do. 
+We’ll also tell you how many ways there are to write the function. 
+Syntactically different but semantically equivalent implementations are not counted as being different. 
+For example, writing a function one way then rewriting the semantically identical function but using anonymous lambda syntax does not count as two implementations.
+To make things a little easier, we’ll demonstrate how to solve this kind of exercise. 
+Given:
+[source]
+----
+myFunc :: (x -> y) -> (y -> z) -> c -> (a, x) -> (a, z)
+myFunc xToY yToZ _ (a, x) = undefined
+----
+
+Talking through the above, we have a function that takes four arguments. 
+The final result is a tuple with the type `(a, z)`. It turns out, the `c` argument is nowhere in our results and there’s nothing to do with it, so we use the underscore to ignore that. 
+We named the two function arguments by their types and pattern matched on the tuple argument. 
+The only way to get the second value of the tuple from the type `x` to the type `z` is to use both of the functions furnished to us. 
+If we tried the following:
+
+`myFunc xToY yToZ _ (a, x) = (a, (xToY x))`
+
+We would get a type error that it expected the type `z` but the actual type was `y`. 
+That’s because we’re on the right path, but not quite done yet! Accordingly, the following should typecheck:
+
+[source]
+----
+myFunc :: (x -> y) -> (y -> z) -> c -> (a, x) -> (a, z)
+myFunc xToY yToZ _ (a, x) = (a, (yToZ (xToY x)))
+----
+
+. 1 
+There is only one function definition that type checks and doesn’t go into an infinite loop when you run it.
+
+[source]
+----
+i :: a -> a; i a = a
+----
+
+. 2 
+There is only one version that works.
+
+[source]
+----
+c :: a -> b -> a ; c a _ = a
+----
+
+3. 
+Given alpha equivalence are c'' and c (see above) the same thing?
+
+[source]
+----
+c'' :: b -> a -> b; c'' b a = b
+----
+4. 
+Only one version that works.
+[source]
+----
+c' :: a -> b -> b; c' = c' _ b = b
+----
+5. 
+There are multiple possibilities, at least two of which you’ve seen in previous chapters.
+
+[source]
+----
+r :: [a] -> [a]; r a = tail a
+r' :: [a] -> [a]; r' = reverse a
+----
+6. 
+Only one version that will typecheck.
+
+[source]
+----
+co :: (b -> c) -> (a -> b) -> a -> c; co f g a = f (g a)
+----
+
+7. 
+One version will typecheck.
+
+[source]
+----
+a :: (a -> c) -> a -> a; a _ a1 = a1
+----
+
+8. 
+One version will typecheck.
+
+[source]
+----
+a' :: (a -> b) -> a -> b; a' f a = f a
+----
+
+==== Fix it
+
+
+. 1 Won’t someone take pity on this poor broken code and fixx it up? Be sure to check carefully for things like capitalization, parentheses, and indentation.
+
+[source]
+----
+include::ch05_5.9_1.hs[]
+----
+
+. 2 Now that it’s fixed, make a minor change and make it sing the other song. If you’re lucky, you’ll end up with both songs stuck in your head!
+
+[source]
+----
+include::ch05_5.9_2.hs[]
+----
+
+. 3
+
+[source]
+----
+include::ch05_5.9_3.hs[]
+----
+
+== Type-Kwon-Do
+
+
+[source]
+----
+data Woot
+data Blah
+f :: Woot -> Blah; f = undefined
+g :: (Blah, Woot) -> (Blah, Blah); g (b, w) = (b, (f w))
+----
+
+. 1
+
+[source]
+----
+f :: Int -> String; f = undefined
+g :: String -> Char; g = undefined
+h :: Int -> Char; h =  g . f
+----
+
+. 2
+
+[source]
+----
+data A 
+data B 
+data C
+
+q :: A -> B; q = undefined
+
+w :: B -> C; w = undefined
+
+e :: A -> C; e = w . q
+----
+
+. 3
+
+[source]
+----
+data X 
+data Y 
+data Z
+
+xz :: X -> Z; xz = undefined
+yz :: Y -> Z; yz = undefined
+
+xform :: (X, Y) -> (Z, Z); xform (x, y) = (xz x, yz y) 
+----
+
+. 4
+
+[source]
+----
+munge :: (x -> y) -> (y -> (w, z)) -> x -> w; munge = f g = fst . g . f
+----
