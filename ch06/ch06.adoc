@@ -1,0 +1,73 @@
+== 6 Typeclasses
+=== Writing typeclass instances 
+==== Exercises: Eq Instances
+Write the Eq instance for the datatype provided.
+. 1 It’s not a typo, we’re just being cute with the name.
+[source]
+----
+data TisAnInteger = TisAn Integer
+instance Eq TisAnInteger where (==) (TisAn v) (TisAn v') = v == v'
+----
+
+. 2 
+[source]
+----
+data TwoIntegers = Two Integer Integer
+instance Eq TwoIntegers where (==) (Two a b) (Two a' b') = a == a' && b == b'
+----
+
+. 3 
+[source]
+----
+data StringOrInt = TisAnInt Int | TisAString String
+instance Eq StringOrInt where
+  (==) (TisAnInt a) (TisAnInt a') = a == a'
+  (==) _ _ = False
+----
+
+. 4 
+[source]
+----
+data Pair a = Pair a a
+instance Eq a => Eq (Pair a) where (==) (Pair a b) (Pair a' b') = a == a' && b == b'
+----
+
+. 5 
+[source]
+----
+data Tuple a b = Tuple a b
+instance (Eq a, Eq b) => Eq (Tuple a b) where (==) (Tuple a b) (Tuple a' b') = a == a' && b == b'
+----
+
+. 6 
+[source]
+----
+data Which a = ThisOne a | ThatOne a
+instance Eq a  => Eq (Which a) where 
+  (==) (ThisOne a) (ThisOne a') = a == a'
+  (==) (ThatOne a) (ThatOne a') = a == a'
+  (==) _ _ = False
+----
+
+. 7 
+[source]
+----
+data EitherOr a b =
+    Hello a
+  | Goodbye b
+instance (Eq a, Eq b)  => Eq (EitherOr a b) where 
+  (==) (Hello a) (Hello a') = a == a'
+  (==) (Goodbye b) (Goodbye b') = b == b'
+  (==) _ _ = False
+
+----
+
+==== Exercises: Tuple Experiment
+Look at the types given for `quotRem` and `divMod`. 
+What do you think those functions do? Test your hypotheses by playing with them in the REPL.
+We’ve given you a sample to start with below:
+[source]
+----
+let ones x = snd (divMod x 10) -- module
+(quotRem 21 10) -- (2, 1) -> (div, mod)
+----
