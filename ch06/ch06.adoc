@@ -59,15 +59,300 @@ instance (Eq a, Eq b)  => Eq (EitherOr a b) where
   (==) (Hello a) (Hello a') = a == a'
   (==) (Goodbye b) (Goodbye b') = b == b'
   (==) _ _ = False
-
 ----
 
 ==== Exercises: Tuple Experiment
 Look at the types given for `quotRem` and `divMod`. 
 What do you think those functions do? Test your hypotheses by playing with them in the REPL.
 We’ve given you a sample to start with below:
+
 [source]
 ----
 let ones x = snd (divMod x 10) -- module
 (quotRem 21 10) -- (2, 1) -> (div, mod)
+----
+
+=== Ord
+==== Exercises: Will They Work?
+Next, take a look at the following code examples and try to decide if they will work, what result they will return if they do, and why or why not (be sure, as always, to test them in your REPL once you have decided on your answer):
+
+. 1
+[source]
+----
+max (length [1, 2, 3]) (length [8, 9, 10, 11, 12]) -- -> 5
+----
+
+. 2
+[source]
+----
+compare (3 * 4) (3 * 5) -- -> LT
+----
+
+. 3
+[source]
+----
+compare "Julie" True -- Char[] not match Bool
+----
+
+. 4
+[source]
+----
+(5 + 3) > (3 + 6) -- False
+----
+
+=== 6.14 Exercises: Chapter Exercises
+==== Multiple Choise
+. 1 The Eq class
+includes all types in Haskell
+is the same as the Ord class
+-> makes equality tests possible
+only includes numeric types
+
+. 2 The typeclass Ord
+allows any two values to be compared
+-> is a subclass of Eq
+is a superclass of Eq
+has no instance for Bool
+
+. 3 Suppose the typeclass Ord has an operator `>`. What is the type of `>`?
+-> `Ord a => a -> a -> Bool`
+`Ord a => Int -> Bool`
+`Ord a => a -> Char`
+`Ord a => Char -> [Char]`
+
+. 4 In `x = divMod 16 12`
+the type of `x` is Integer
+the value of `x`is undecidable
+-> the type of `x` is a tuple
+`x` is equal to `12 / 16`
+
+. 5 The typeclass Integral includes
+-> Int and Integer numbers
+integral, real, and fractional numbers
+Schrodinger’s cat
+only positive numbers
+
+==== Does it typecheck?
+For this section of exercises, you’ll be practicing looking for type and typeclass errors.
+For example, `printIt` will not work because functions like `x`have no instance of `Show`, the typeclass that lets you convert things to `Strings` (usually for printing):
+
+[source]
+----
+x :: Int -> Int
+x blah = blah + 20
+
+printIt :: IO ()
+printIt = putStrLn (show x)
+----
+
+Here’s the type error you get if you try to load the code:
+
+[source]
+----
+No instance for (Show (Int -> Int)) arising
+  from a use of ‘show’
+
+In the first argument of ‘putStrLn’, namely ‘(show x)’
+In the expression: putStrLn (show x)
+In an equation for ‘printIt’: printIt = putStrLn (show x)
+----
+
+It’s saying it can’t find an implementation of the typeclass `Show` for the type `Int -> Int`, which makes sense. Nothing with the function type constructor `(->)` has an instance of Show by default in Haskell.
+Examine the following code and decide whether it will typecheck. Then load it in GHCi and see if you were correct. If it doesn’t typecheck, try to match the type error against your understanding of why it didn’t work. If you can, fix the error and re-run the code.
+
+. 1 Does the following code typecheck? If not, why not?
+
+[source]
+----
+data Person = Person Bool
+
+printPerson :: Person -> IO ()
+printPerson person = putStrLn (show person) -- no instance for Show Person
+----
+
+. 2 Does the following typecheck? If not, why not?
+data Mood = Blah
+          | Woot deriving Show
+
+settleDown x = if x == Woot -- no instance for Eq Mood
+                 then Blah
+                 else x
+----
+
+. 3 If you were able to get settleDown to typecheck:
+  . 1 What values are acceptable inputs to that function? --> Blah, Woot
+  . 2 What will happen if you try to run settleDown 9? Why? --> 9 is not type Mood
+  . 3 What will happen if you try to run Blah > Woot? Why? --> no instance for Ord Woot
+
+. 4 Does the following typecheck? If not, why not?
+
+[source]
+----
+type Subject = String
+type Verb = String
+type Object = String
+
+data Sentence =
+  Sentence Subject Verb Object
+  deriving (Eq, Show)
+
+s1 = Sentence "dogs" "drool"
+s2 = Sentence "Julie" "loves" "dogs"
+----
+
+==== “Given a datatype declaration, what can we do?
+Given the following datatype definitions:
+
+[source]
+----
+data Rocks =
+  Rocks String deriving (Eq, Show)
+
+data Yeah = 
+  Yeah Bool deriving (Eq, Show)
+
+data Papu =
+  Papu Rocks Yeah
+  deriving (Eq, Show)
+----
+
+Which of the following will typecheck? For the ones that don’t typecheck, why don’t they?
+
+  . 1 ’phew = Papu "chases" True’ --> ko types not match
+  . 2 ’truth = Papu (Rocks "chomskydoz") (Yeah True)’ --> ok
+  . 3 ’equalityForall :: Papu -> Papu -> Bool; equalityForall p p' = p == p'’  --> ok
+  . 4 ’comparePapus :: Papu -> Papu -> Bool; comparePapus p p' = p > p'’ --> no instance for Ord Papu
+
+  ==== Match the types
+We’re going to give you two types and their implementations. Then we’re going to ask you if you can substitute the second type for the first. You can test this by typing the first declaration and its type into a file and editing in the new one, loading to see if it fails. Don’t guess, test all your answers!
+
+. 1 For the following definition.
+
+[source]
+----
+i :: Num a => a; i = 1
+-----
+
+Try replacing the type signature with the following:
+’i :: a’
+After you’ve formulated your own answer, then tested that answer and believe you understand why you were right or wrong, make sure to use GHCi to check what type GHC infers for the definitions we provide without a type assigned. For example, for this one, you’d type in:
+’Prelude> let i = 1’
+’Prelude> :t i’
+’-- Result elided intentionally.’
+’-- No instance for (Num a) arising from the literal 1’
+
+. 2 
+
+[source]
+----
+f :: Float; f = 1.0
+f :: Num a => a; f = 1.0
+-- Could not deduce (Fractional a) arising from the literal ‘1.0’
+----
+
+. 3
+
+[source]
+----
+f :: Float; f = 1.0
+f :: Fractional a => a; f = 1.0
+-- ok
+----
+
+. 4 Hint for the following: type :info RealFrac in your REPL.
+
+[source]
+----
+f :: Float; f = 1.0
+f :: RealFrac a => a; f = 1.0
+-- ok
+----
+
+. 5 
+
+[source]
+----
+freud :: a -> a; freud x = x
+freud :: Ord a => a -> a; freud x = x
+-- ok
+----
+
+. 6 
+
+[source]
+----
+freud' :: a -> a; freud' x = x
+freud' :: Int -> Int; freud' x = x
+-- ok
+-----
+
+. 7 
+
+[source]
+----
+myX = 1 :: Int
+
+sigmund :: Int -> Int; sigmund x = myX
+sigmund :: a -> a; sigmund x = myX -- not match type of myX, a have to be Int
+----
+
+. 8
+
+[source]
+----
+myX = 1 :: Int
+sigmund' :: Int -> Int; sigmund' x = myX
+sigmund' :: Num a => a -> a; sigmund' x = myX -- not match type of myX, a have to be Int
+----
+
+. 9 You’ll need to import sort from Data.List.
+
+[source]
+----
+jung :: Ord a => [a] -> a; jung xs = head (sort xs)
+jung :: [Int] -> Int; jung xs = head (sort xs)
+-- ok
+----
+
+. 10
+
+[source]
+----
+young :: [Char] -> Char; young xs = head (sort xs)
+young :: Ord a => [a] -> a; young xs = head (sort xs)
+--ok
+----
+
+. 11
+
+[source]
+----
+mySort :: [Char] -> [Char]; mySort = sort
+signifier :: [Char] -> Char; signifier xs = head (mySort xs)
+signifier :: Ord a => [a] -> a; signifier xs = head (mySort xs)
+-- mySort is bound to [Char] -> [Char] so signifier requires Char, not Ord
+----
+
+==== Type-Kwon-Do Two: Electric Typealoo
+Round Two! Same rules apply — you’re trying to fill in terms (code) which’ll fit the type. The idea with these exercises is that you’ll derive the implementation from the type information. You’ll probably need to use stuff from Prelude.
+. 1
+
+[source]
+----
+chk :: Eq b => (a -> b) -> a -> b -> Bool
+chk f a b = (f a) == b
+-- Hint: use some arithmetic operation to
+-- combine values of type 'b'. Pick one.
+----
+
+. 2
+
+[source]
+----
+arith :: Num b
+      => (a -> b)
+      -> Integer
+      -> a
+      -> b
+arith f i a = (f a) + (fromInteger i)
 ----
