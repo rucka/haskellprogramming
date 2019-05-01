@@ -1,0 +1,120 @@
+== 7 More functional patterns
+=== 7.4 Anonymous functions
+==== Exercises: Grab Bag
+. 1 
+Which (two or more) of the following are equivalent?
+[source]
+----
+mTh x y z = x * y * z
+mTh x y = \z -> x * y * z
+mTh x = \y -> \z -> x * y * z
+mTh = \x -> \y -> \z -> x * y * z
+-- all are equal
+----
+. 2
+The type of mTh (above) is `Num a => a -> a -> a -> a`.
+Which is the type of mTh 3?
+[source]
+----
+Integer -> Integer -> Integer
+Num a => a -> a -> a -> a
+Num a => a -> a
+Num a => a -> a -> a -- this
+----
+. 3 
+Next, we’ll practice writing anonymous lambda syntax.
+For example, one could rewrite:
+`addOne x = x + 1`
+Into:
+`addOne = \x -> x + 1`
+Try to make it so it can still be loaded as a top-level definition by GHCi. This will make it easier to validate your answers.
+  . 1 Rewrite the `f` function in the where clause.
+[source]
+----
+addOneIfOdd n = case odd n of
+  True -> f n
+  False -> n
+  where f n = n + 1
+-- became
+addOneIfOdd' n = case odd n of
+  True -> (\x -> x + 1) n
+  False -> n
+----
+  . 2 Rewrite the following to use anonymous lambda syntax:
+`addFive x y = (if x > y then y else x) + 5`
+became
+`addFive = \x -> \y -> (if x > y then y else x) + 5`
+  . 3 Rewrite the following so that it doesn’t use anonymous lambda syntax:
+`mflip f = \x -> \y -> f y x`
+became
+`mflip \f -> \x -> \y -> f y x`
+
+=== 7.5 Pattern matching
+==== Exercises: Exercises: Variety Pack
+
+. 1 Given the following declarations
+[source]
+----
+k (x, y) = x
+k1 = k ((4-1), 10)
+k2 = k ("three", (1 + 2))
+k3 = k (3, True)
+----
+What is the type of `k`? `k :: (a, b) -> a`
+
+What is the type of `k2`? Is it the same type as `k1` or `k3`? `k1 :: [Char]` / no
+
+Of `k1`, `k2`, `k3`, which will return the number `3` as the result?
+
+. 2 Fill in the definition of the following function:
+[source]
+----
+-- Remember: Tuples have the
+             same syntax for their
+--           type constructors and
+--           their data constructors.
+
+f :: (a, b, c)
+  -> (d, e, f)
+  -> ((a, d), (c, f))
+f (a, b, c) (d, e, f) = ((a, d), (c, f))
+----
+
+=== 7.6 Case expressions
+==== Exercises: Case practice
+
+We’re going to practice using case expressions by rewriting functions. Some of these functions you’ve seen in previous chapters (and some you’ll see later using different syntax yet again!), but you’ll be writing new versions now. Please note these are all written as they would be in source code files, and we recommend you write your answers in source files and then load into GHCi to check, rather than trying to do them directly into the REPL.
+
+. 1
+First, rewrite if-then-else expressions into case expressions.
+The following should return x when x is greater than y.
+[source]
+----
+functionC x y = if (x > y) then x else y
+functionC' x y = case x > y of
+  True -> x
+  False -> y
+----
+
+. 2 
+The following will add 2 to even numbers and otherwise simply return the input value.
+[source]
+----
+ifEvenAdd2 n = if even n then (n+2) else n
+ifEvenAdd2' n = case even n of
+  True -> n + 2
+  False -> n
+----
+
+The next exercise doesn’t have all the cases covered. See if you can fix it.
+
+. 3
+The following compares a value, x, to zero and returns an indicator for whether x is a postive number or negative number. But what if x is 0? You may need to play with the compare function a bit to find what to do.
+[source]
+----
+nums x =
+  case compare x 0 of
+    LT -> -1
+    GT -> 1
+    EQ -> 0
+----
